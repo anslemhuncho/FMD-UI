@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .analysis-container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+    
+    .upload-card {
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: none;
+    }
+    
+    .upload-header {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .upload-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .upload-body {
+        padding: 2rem;
+        background-color: #f8fafc;
+    }
+    
+    .file-upload-wrapper {
+        margin-bottom: 1.5rem;
+    }
+    
+    .custom-file-label::after {
+        content: "Browse";
+    }
+    
+    .image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        display: none;
+        margin: 1rem auto;
+    }
+    
+    .btn-analyze {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border: none;
+        color: white;
+        padding: 0.8rem 2.5rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+    
+    .btn-analyze:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(41, 128, 185, 0.3);
+    }
+    
+    /* Results section styles - maintaining original functionality */
+    .result-section {
+        margin-top: 2rem;
+        display: {% if prediction %}block{% else %}none{% endif %};
+    }
+    
+    .diagnosis-alert {
+        border-left: 4px solid;
+    }
+    
+    .diagnosis-normal {
+        border-left-color: #28a745;
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+    
+    .diagnosis-abnormal {
+        border-left-color: #dc3545;
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+</style>
+
+<div class="container analysis-container">
+    <div class="upload-card">
+        <div class="upload-header">
+            <div class="upload-icon">
+                <i class="fas fa-x-ray"></i>
+            </div>
+            <h2>Liver X-ray Analysis</h2>
+            <p class="mb-0">Upload an image for AI-powered cirrhosis assessment</p>
+        </div>
+        
+        <div class="upload-body">
+            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="form-group file-upload-wrapper">
+                    <label for="xray_image" class="font-weight-bold">Select X-ray Image:</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="xray_image" id="xray_image" accept="image/*" required>
+                        <label class="custom-file-label" for="xray_image">Choose file...</label>
+                        <small class="form-text text-muted">
+                            Supported formats: JPEG, PNG. Maximum size: 5MB.
+                        </small>
+                        <div class="invalid-feedback">Please select a valid image file.</div>
+                    </div>
+                </div>
+                
+                <img id="imagePreview" class="image-preview" alt="X-ray Preview">
+                
+                <div class="text-center">
+                    <button type="submit" class="btn-analyze">
+                        <i class="fas fa-search mr-2"></i> Analyze Image
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Results Section - Maintaining original functionality -->
+            {% if prediction %}
+            <div class="result-section">
+                <hr>
+                <h3 class="text-center mb-4">Analysis Results</h3>
+                <div class="alert diagnosis-alert {% if 'normal' in prediction|lower %}diagnosis-normal{% else %}diagnosis-abnormal{% endif %}">
+                    <h4 class="alert-heading">
+                        <i class="fas fa-{% if 'normal' in prediction|lower %}check-circle{% else %}exclamation-triangle{% endif %} mr-2"></i>
+                        Diagnosis
+                    </h4>
+                    <p class="mb-0">{{ prediction }}</p>
+                    {% if 'normal' not in prediction|lower %}
+                    <hr>
+                    <p class="mb-0"><small>Note: This is a preliminary assessment. Please consult with a healthcare professional for detailed evaluation.</small></p>
+                    {% endif %}
+                </div>
+                
+                <div class="text-center mt-3">
+                    <button class="btn btn-outline-secondary mr-2">
+                        <i class="fas fa-info-circle mr-2"></i> Learn More
+                    </button>
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-user-md mr-2"></i> Find Specialist
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="card-footer text-muted text-center">
+            <small>AI-powered diagnostic assistance | Not a substitute for professional medical advice</small>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Image preview functionality - purely visual, doesn't affect form submission
+    document.getElementById('xray_image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        const label = this.nextElementSibling;
+        
+        if (file) {
+            // Update file label
+            label.innerText = file.name;
+            
+            // Show preview if it's an image
+            if (file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        } else {
+            label.innerText = 'Choose file...';
+            preview.style.display = 'none';
+        }
+    });
+
+    // Maintain original form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{% endblock %}

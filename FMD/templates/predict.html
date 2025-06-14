@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .prediction-container {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        margin: 3rem auto;
+        max-width: 800px;
+    }
+
+    .prediction-header {
+        color: #2c3e50;
+        border-bottom: 2px solid #27ae60;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #34495e;
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.6rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .btn-submit {
+        margin-top: 1rem;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #219150;
+    }
+
+    .result {
+        margin-top: 2rem;
+        padding: 1rem;
+        border-left: 5px solid #2ecc71;
+        background-color: #f0fdf4;
+        border-radius: 4px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    @media (max-width: 600px) {
+        .prediction-container {
+            padding: 1.2rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="prediction-container">
+        <div class="prediction-header">
+            <h2>Foot and Mouth Disease Prediction</h2>
+            <p>Enter the following data to check for possible FMD risk</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="rainfall">rainfall</label>
+                <input type="number" step="any" class="form-control" name="rainfall" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="cattle_density">cattle_density</label>
+                <input type="number" step="any" class="form-control" name="cattle_density" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="max_temp">max_temp</label>
+                <input type="number" step="any" class="form-control" name="max_temp" required>
+            </div>
+            <div class="form-group">
+            <label class="form-label" for="current_reference">Current Reference</label>
+             <input type="number" step="any" class="form-control" name="current_reference" required>
+            </div>
+
+            <div class="form-group">
+            <label class="form-label" for="year">Year</label>
+            <input type="number" class="form-control" name="year" required>
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="international_boarder">international_boarder</label>
+                <input type="number" min="0" max="1" class="form-control" name="international_boarder" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="adjacent_national_parks">adjacent_national_parks</label>
+                <input type="number" min="0" max="1" class="form-control" name="adjacent_national_parks" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Predict FMD</button>
+        </form>
+
+        {% if prediction is not None %}
+            <div class="result">
+                {{ prediction }}
+            </div>
+        {% endif %}
+        {% if error %}
+             <div class="alert alert-danger mt-3">
+              {{ error }}
+               </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
