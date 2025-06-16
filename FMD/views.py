@@ -11,6 +11,11 @@ import joblib
 from django.conf import settings
 from .models import FootandMouth
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
+from PIL import Image  
+from torchvision import transforms
+import numpy as np
+import onnxruntime as ort
 
 
 
@@ -96,6 +101,45 @@ def PredictView(request):
     
     return render(request, 'predict.html', {'prediction': prediction, 'error': error})
 
+def Image_detection(request):
+    return render(request, 'Image_detection.html')
 
 
 
+
+# Image transformation (same as training)
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
+])
+
+def Image_detection(request):
+    prediction = None
+    if request.method == 'POST' and request.FILES.get('image'):
+        image_file = request.FILES['image']
+        fs = FileSystemStorage()
+        file_path = fs.save(image_file.name, image_file)
+        full_path = fs.path(file_path)
+
+        # Load and preprocess image
+        image = Image.open(full_path).convert('RGB')
+        image = transform(image)
+        image = image.unsqueeze(0).numpy()
+
+        # Load ONNX model
+        model_path = os.path.join('FMD', 'ml_models', 'FMD_resnet50_model.onnx')
+        session = ort.InferenceSession(model_path)
+        input_name = session.get_inputs()[0].name
+
+        # Run inference
+        outputs = session.run(None, {input_name: image})
+        pred_class = np.argmax(outputs[0])
+
+        prediction = int(pred_class)
+
+        # Delete uploaded image after prediction (optional)
+        os.remove(full_path)
+
+    return render(request, 'Image_detection.html', {'prediction': prediction})

@@ -17,202 +17,121 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <title>{% block title %}Liver Cirrhosis Prediction | Early Detection System{% endblock %}</title>
+ <!doctype html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}VetAI - Interpretable FMD Detection{% endblock %}</title>
 
   <style>
+    /* Use your homepage dark blue background for header and footer */
     :root {
-      --primary-color: #3498db;
-      --secondary-color: #2980b9;
-      --accent-color: #e74c3c;
-      --light-color: #f8f9fa;
-      --dark-color: #343a40;
+      --main-bg-color: #0b2149;
+      --button-bg-color: #0f2e5d;
+      --button-hover-bg-color: #264a83;
+      --text-color: white;
+      --text-secondary: #dcdcdc;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      color: var(--text-color);
+      background-color: #f0f2f5;
     }
-    
-    .navbar-custom {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 0.8rem 1rem;
-      position: fixed;
-      width: 100%; /* Full width */
-      top: 0; /* Stick to top */
-      z-index: 1030; /* Ensure it stays above other content */
-    }
-    
-    .navbar-brand {
-      font-weight: 600;
-      font-size: 1.5rem;
-      color: white !important;
+
+    /* Fixed header with your color and style */
+    header {
+      background-color: var(--main-bg-color);
+      height: 60px;
+      width: 100%;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
     }
-    
-    .navbar-brand i {
-      margin-right: 10px;
+
+    /* Logo text in header */
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--text-color);
+      user-select: none;
     }
-    
-    .nav-link {
+
+    /* Logout link on right in white */
+    .logout-link {
+      color: var(--text-color);
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.9) !important;
-      padding: 0.5rem 1rem !important;
-      margin: 0 0.2rem;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-link:hover {
-      color: white !important;
-      background-color: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
-    }
-    
-    .nav-link.active {
-      font-weight: 600;
-      color: white !important;
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-    
-    .btn-logout {
-      background-color: white;
-      color: var(--primary-color) !important;
-      border-radius: 50px;
-      padding: 0.4rem 1.2rem !important;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      border: 2px solid white;
-    }
-    
-    .btn-logout:hover {
-      background-color: transparent;
-      color: white !important;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .content-container {
-      flex: 1;
-      padding: 2rem 0;
-      margin-top: 80px;
-    }
-    
-    .page-header {
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--primary-color);
-    }
-    
-    footer {
-      background: linear-gradient(135deg, var(--dark-color), #212529);
-      color: white;
-      padding: 2rem 0;
-      margin-top: auto;
-    }
-    
-    .footer-links a {
-      color: rgba(255, 255, 255, 0.7);
-      margin: 0 1rem;
-      transition: color 0.3s;
-    }
-    
-    .footer-links a:hover {
-      color: white;
       text-decoration: none;
+      cursor: pointer;
+      font-size: 16px;
+      user-select: none;
+      transition: color 0.3s ease;
     }
-    
-    .social-icons a {
-      color: white;
-      font-size: 1.5rem;
-      margin: 0 0.5rem;
-      transition: transform 0.3s;
+
+    .logout-link:hover {
+      color: var(--button-hover-bg-color);
+      text-decoration: underline;
     }
-    
-    .social-icons a:hover {
-      transform: translateY(-3px);
+
+    /* Main content pushed below fixed header */
+    main {
+      flex-grow: 1;
+      padding: 80px 20px 40px; /* Top padding > header height */
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      color: #222;
     }
-    
-    @media (max-width: 768px) {
-      .navbar-brand {
-        font-size: 1.2rem;
-      }
-      
-      .nav-link {
-        margin: 0.2rem 0;
-      }
-      
-      .btn-logout {
-        margin-top: 0.5rem;
-      }
+
+    /* Footer matches header style */
+    footer {
+      background-color: var(--main-bg-color);
+      color: var(--text-color);
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 14px;
+      user-select: none;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-custom">
-    <a class="navbar-brand" href="{% url 'home' %}">
-      <i class="fas fa-heartbeat"></i> LiverAI
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon" style="color: white;">☰</span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if 'predict' in request.path %}active{% endif %}" href="{% url 'predict' %}">Predict</a>
-        </li>
-        
-        <li class="nav-item">
+  <header>
 
-          <a href="{% url 'logout' %}" class="nav-link btn-logout">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </a>
+    <a href="{% url 'home' %}" class="logo">VetAI</a>
+    <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+  </header>
 
-        </li>
-
-      </ul>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="content-container">
-    <div class="container">
-      {% block content %}
-      <!-- Content for individual pages will go here -->
-      {% endblock %}
-    </div>
+  <main>
+    {% block content %}
+    <!-- Page-specific content goes here -->
+    {% endblock %}
   </main>
 
-  <!-- Footer -->
   <footer>
-    <div class="container text-center">
-      <div class="footer-links mb-3">
-        <a href="#">About Us</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Contact</a>
-      </div>
-      <div class="social-icons mb-3">
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-facebook"></i></a>
-        <a href="#"><i class="fab fa-linkedin"></i></a>
-        <a href="#"><i class="fab fa-github"></i></a>
-      </div>
-      <p class="mb-0">&copy; 2023 LiverAI Detection System. All rights reserved.</p>
-    </div>
+    &copy; 2025 VetAI - Interpretable Foot-and-Mouth Disease Detection
   </footer>
+
+</body>
+
+</html>
 
   <!-- Bootstrap and Optional JavaScript -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -223,16 +142,6 @@
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
 
-  <script>
-    // Add active class to current nav item
-    $(document).ready(function() {
-      $('.nav-link').each(function() {
-        if (this.href === window.location.href) {
-          $(this).addClass('active');
-        }
-      });
-    });
-  </script>
 </body>
 
 </html>

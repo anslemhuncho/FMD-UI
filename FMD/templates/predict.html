@@ -3,128 +3,171 @@
 
 {% block content %}
 <style>
-    .prediction-container {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        padding: 2.5rem;
-        margin: 3rem auto;
-        max-width: 800px;
-    }
-
-    .prediction-header {
-        color: #2c3e50;
-        border-bottom: 2px solid #27ae60;
-        padding-bottom: 1rem;
-        margin-bottom: 2rem;
+    body {
+        background-color: #0b1e3b;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #e0e6f0;
         text-align: center;
     }
 
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-top: 60px;
+    }
+
+    .title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #f0f4ff;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        font-size: 18px;
+        color: #cfd8e4;
+        margin-bottom: 30px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-group {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+
     .form-label {
+        width: 45%;
+        text-align: right;
+        padding-right: 10px;
         font-weight: 500;
-        color: #34495e;
-        display: block;
-        margin-bottom: 0.3rem;
+        color: #d4d9e3;
     }
 
     .form-control {
-        width: 100%;
-        padding: 0.6rem;
+        width: 50%;
+        padding: 10px;
         border-radius: 5px;
-        border: 1px solid #ccc;
+        border: none;
+        background-color: #162b4d;
+        color: #fff;
+        font-size: 16px;
     }
 
     .btn-submit {
-        margin-top: 1rem;
-        background-color: #27ae60;
-        color: white;
+        margin-top: 20px;
+        background-color: #213e74;
+        color: #ffffff;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: bold;
         border: none;
-        padding: 0.75rem 2rem;
         border-radius: 5px;
-        font-weight: 600;
-        transition: background-color 0.3s ease;
+        cursor: pointer;
     }
 
     .btn-submit:hover {
-        background-color: #219150;
+        background-color: #2f4f85;
+    }
+
+    .logout {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 16px;
+    }
+
+    .logout a {
+        color: #e0e6f0;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 16px;
+        border: 1px solid #e0e6f0;
+        border-radius: 4px;
+    }
+
+    .logout a:hover {
+        background-color: #ffffff10;
     }
 
     .result {
-        margin-top: 2rem;
-        padding: 1rem;
-        border-left: 5px solid #2ecc71;
-        background-color: #f0fdf4;
-        border-radius: 4px;
-        font-size: 1.2rem;
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #17355c;
+        border-left: 4px solid #4caf50;
+        color: #c8f7c5;
         font-weight: 500;
-        color: #2c3e50;
-    }
-
-    @media (max-width: 600px) {
-        .prediction-container {
-            padding: 1.2rem;
-        }
     }
 </style>
 
+<div class="logout">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+
 <div class="container">
-    <div class="prediction-container">
-        <div class="prediction-header">
-            <h2>Foot and Mouth Disease Prediction</h2>
-            <p>Enter the following data to check for possible FMD risk</p>
+    <h2 class="title">Early Foot-and-Mouth Disease Detection</h2>
+    <p class="subtitle">
+        Enter the relevant parameters below to assess the likelihood of Foot-and-Mouth Disease (FMD) in livestock.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label" for="rainfall">Rainfall (mm)</label>
+            <input type="number" step="any" name="rainfall" class="form-control" required>
         </div>
 
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label class="form-label" for="rainfall">rainfall</label>
-                <input type="number" step="any" class="form-control" name="rainfall" required>
-            </div>
+        <div class="form-group">
+            <label class="form-label" for="cattle_density">Cattle Density</label>
+            <input type="number" step="any" name="cattle_density" class="form-control" required>
+        </div>
 
-            <div class="form-group">
-                <label class="form-label" for="cattle_density">cattle_density</label>
-                <input type="number" step="any" class="form-control" name="cattle_density" required>
-            </div>
+        <div class="form-group">
+            <label class="form-label" for="max_temp">Maximum Temperature (°C)</label>
+            <input type="number" step="any" name="max_temp" class="form-control" required>
+        </div>
+        <div class="form-group">
+    <label class="form-label" for="current_reference">Current Reference Index</label>
+    <input type="number" step="any" name="current_reference" class="form-control" required>
+</div>
 
-            <div class="form-group">
-                <label class="form-label" for="max_temp">max_temp</label>
-                <input type="number" step="any" class="form-control" name="max_temp" required>
-            </div>
-            <div class="form-group">
-            <label class="form-label" for="current_reference">Current Reference</label>
-             <input type="number" step="any" class="form-control" name="current_reference" required>
-            </div>
-
-            <div class="form-group">
-            <label class="form-label" for="year">Year</label>
-            <input type="number" class="form-control" name="year" required>
-            </div>
+<div class="form-group">
+    <label class="form-label" for="year">Year</label>
+    <input type="number" name="year" class="form-control" required>
+</div>
 
 
-            <div class="form-group">
-                <label class="form-label" for="international_boarder">international_boarder</label>
-                <input type="number" min="0" max="1" class="form-control" name="international_boarder" required>
-            </div>
+        <div class="form-group">
+            <label class="form-label" for="international_boarder">International Border (0 = No, 1 = Yes)</label>
+            <input type="number" min="0" max="1" name="international_boarder" class="form-control" required>
+        </div>
 
-            <div class="form-group">
-                <label class="form-label" for="adjacent_national_parks">adjacent_national_parks</label>
-                <input type="number" min="0" max="1" class="form-control" name="adjacent_national_parks" required>
-            </div>
+        <div class="form-group">
+            <label class="form-label" for="adjacent_national_parks">Adjacent to National Parks (0 = No, 1 = Yes)</label>
+            <input type="number" min="0" max="1" name="adjacent_national_parks" class="form-control" required>
+        </div>
 
-            <button type="submit" class="btn-submit">Predict FMD</button>
-        </form>
+        <button type="submit" class="btn-submit">Predict</button>
+    </form>
 
-        {% if prediction is not None %}
-            <div class="result">
-                {{ prediction }}
-            </div>
-        {% endif %}
-        {% if error %}
-             <div class="alert alert-danger mt-3">
-              {{ error }}
-               </div>
-        {% endif %}
+    {% if prediction is not None %}
+        <div class="result">
+            {{ prediction }}
+        </div>
+    {% endif %}
 
-    </div>
+    {% if error %}
+        <div class="result" style="border-left: 4px solid red; color: #ffcccc;">
+            {{ error }}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

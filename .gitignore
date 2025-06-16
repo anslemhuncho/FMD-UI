@@ -1,0 +1,23 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+
+# Django DB
+*.sqlite3
+
+# Model files - too large for Git
+FMD/ml_models/*.onnx
+FMD/ml_models/*.pkl
+
+# Virtual environments (if created here)
+venv/
+env/
+.myenv/
+
+# IDE/editor folders
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
